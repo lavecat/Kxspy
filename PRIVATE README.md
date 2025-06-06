@@ -10,7 +10,7 @@
 
 - /ig-count/:gameId: Donne le nombre de player avec le gameId
 
-- /cors: Un espece de proxy 
+- /cors: Un espece de proxy ta captée
 
 ### WebSocket <3:
 
