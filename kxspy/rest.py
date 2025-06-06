@@ -16,9 +16,6 @@ class RestApi:
     """
     def __init__(self, kxs_network_rest__url: str = "https://network.kxs.rip") -> None:
         self.rest_uri = kxs_network_rest__url
-        self.headers = {
-            "Authorization": password
-        }
 
     async def request(self, method: str, rout: str, data: dict = {}) -> dict or None:
         """
@@ -40,16 +37,14 @@ class RestApi:
         """
         rout = rout
         async with aiohttp.ClientSession() as session:
-            async with session.request(method, self.rest_uri + rout, headers=self.headers, json=data) as _response:
+            async with session.request(method, self.rest_uri + rout,json=data) as _response:
                 _LOG.debug(f"{method} {self.rest_uri + rout}")
-                if _response.headers["Content-Type"] == "application/json":
-                    response = await _response.json()
-                elif _response.headers["Content-Type"] == "text/plain":
-                    response = await _response.text()
+
+                response = await _response.json()
 
                 _LOG.debug(response)
 
-                if _response.status != 200 or 204:
+                if _response.status != 200:
                     _LOG.error(f"Request failed: {response}")
                 return response
 
