@@ -16,8 +16,7 @@
 
 ### Send by client
 
-- 
+- "op":2 ( identify )  | {"op":2,"d":{"username": "Kxspourlavie<3","isVoiceChat": False or True} envoyée au moment de l' "op":10
+- "op":1 ( keep alive) | {"op": 1, "d": {}} Envoyée tout les ... ms ( recuperée grace au "op":10 )
 
 ### Send by server
-
--
