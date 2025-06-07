@@ -8,18 +8,21 @@ _LOG = logging.getLogger("Kxspy.ws")
 class WS:
     def __init__(
             self,
-            ws_url: str = "wss://network.kxs.rip/",
-            loop: t.Optional[asyncio.AbstractEventLoop] = None
+            ws_url: str = "wss://network.kxs.rip/"
     ) -> None:
         self.ws = None
         self.ws_url = ws_url
-        self._loop = loop
+        self._loop = asyncio.get_event_loop()
+        self._session = aiohttp.ClientSession()
         self.is_connect: bool = False
         self.is_authenticate: bool = False
 
+    def connect(self) -> asyncio.Task:
+        """ Attempts to establish a connection to Kxs Network. """
+        return self._loop.create_task(self._connect())
 
     async def _connect(self):
-        async with aiohttp.ClientSession(loop=self._loop) as session:
+        async with self._session as session:
             self.session = session
             _LOG.info(f"Connecting to websocket {self.ws_url}")
             try:
@@ -74,8 +77,8 @@ class WS:
             _LOG.info("test huh")
         elif payload["op"] == 10:
             interval = d.get("heartbeat_interval", 3000)
+            await self.send({"op": 2, "d": {"username": "Undevrdm:D", "isVoiceChat": False}})  # Just for try
             await self.heartbeat(interval)
-            await self.send({"op": 2, "d": {"username":"test","isVoiceChat":False}}) # Just for try
 
 
 
