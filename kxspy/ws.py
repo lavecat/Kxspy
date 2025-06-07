@@ -41,6 +41,7 @@ class WS:
                     self._loop.create_task(self.callback(msg.json()))
                 elif msg.type in (aiohttp.WSMsgType.CLOSE, aiohttp.WSMsgType.CLOSING, aiohttp.WSMsgType.CLOSED):
                     _LOG.error("Websocket closed")
+                    await self.check_connection()
                     break
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     _LOG.error(msg.data)
@@ -50,14 +51,32 @@ class WS:
             await self._connect()
 
     async def check_connection(self):
-        while self.ws.closed is None or not self.ws.closed or not self.is_connected:
+        while self.ws.closed is not None or not self.ws.closed or not self.is_connected:
             _LOG.warning("Websocket closed unexpectedly - reconnecting in 12 seconds")
             await asyncio.sleep(12)
             await self._connect()
 
+    async def heartbeat(self, interval):
+        while self.ws is not None and not self.ws.closed and self.is_connected:
+            try:
+                await asyncio.sleep(interval / 3000)
+                await self.send({"op": 1, "d": {}})
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                _LOG.error(f"Heartbeat error: {e}")
+                break
+
+
     async def callback(self, payload: dict):
+        d = payload["d"]
         if payload["op"] == 1:
             _LOG.info("test huh")
+        elif payload["op"] == 10:
+            interval = d.get("heartbeat_interval", 3000)
+            await self.heartbeat(interval)
+            await self.send({"op": 2, "d": {"username":"test","isVoiceChat":False}}) # Just for try
+
 
 
     @property
