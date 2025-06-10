@@ -11,11 +11,14 @@ class RestApi:
 
     Parameters
     ---------
-    kxs_network_rest__url: :class:`str`
+    kxs_network_rest_url: :class:`str`
         Rest url of the kxs network REST API.
+    adminKey: :class:`str`
+        Only for admin routs .
     """
-    def __init__(self, kxs_network_rest__url: str = "https://network.kxs.rip") -> None:
-        self.rest_uri = kxs_network_rest__url
+    def __init__(self, kxs_network_rest_url: str = "https://network.kxs.rip", adminKey: str = None) -> None:
+        self.rest_uri = kxs_network_rest_url
+        self.admin_key = adminKey
 
     async def request(self, method: str, rout: str, data: dict = {}) -> dict or str:
         """
@@ -90,4 +93,16 @@ class RestApi:
             The response from the request.
         """
         res = await self.request("GET", "/getLatestVersion")
+        return res
+
+    async def user_manager_status(self) -> dict:
+        """
+        This function makes a request to the kxs network REST API.
+
+        Returns
+        -------
+        :class:`dict`
+            The response from the request.
+        """
+        res = await self.request("POST", "/users-manager/status",data={"adminKey":self.admin_key})
         return res

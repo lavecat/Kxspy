@@ -1,7 +1,6 @@
 import asyncio
 import aiohttp
 import logging
-import typing as t
 
 _LOG = logging.getLogger("Kxspy.ws")
 
@@ -44,7 +43,6 @@ class WS:
                     self._loop.create_task(self.callback(msg.json()))
                 elif msg.type in (aiohttp.WSMsgType.CLOSE, aiohttp.WSMsgType.CLOSING, aiohttp.WSMsgType.CLOSED):
                     _LOG.error("Websocket closed")
-                    await self.check_connection()
                     break
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     _LOG.error(msg.data)
