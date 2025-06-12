@@ -73,14 +73,33 @@ class WS:
 
     async def callback(self, payload: dict):
         d = payload["d"]
-        if payload["op"] == 1:
-            _LOG.info("test huh")
-        elif payload["op"] == 10:
+        if payload["op"] == 1: # HEARTBEAT
+            _LOG.info("test huh 1")
+        elif payload["op"] == 2: # IDENTIFY
+            _LOG.info("test huh 2")
+        elif payload["op"] == 3: # GAME START
+            _LOG.info("test huh 3")
+        elif payload["op"] == 4: # GAME END
+            _LOG.info("test huh 4")
+        elif payload["op"] == 5: # KILL EVENT
+            _LOG.info("test huh 5")
+        elif payload["op"] == 6: # VERSION UPDATE
+            _LOG.info("test huh 6")
+        elif payload["op"] == 7: # CHAT MESSAGE
+            _LOG.info("test huh 7")
+        elif payload["op"] == 10: # HELLO (heartbeat interval)
             interval = d.get("heartbeat_interval", 3000)
             await self.send({"op": 2, "d": {"username": "Undevrdm:D", "isVoiceChat": False,"v":self.version}})  # Just for try
             await self.heartbeat(interval)
-
-
+            _LOG.info("test huh 10")
+        elif payload["op"] == 87: # BROADCAST MESSAGE
+            _LOG.info("test huh 87 ( bro 1-10 BUT WHY 87 nah :p )")
+        elif payload["op"] == 98: # VOICE CHAT UPDATE
+            _LOG.info("test huh 98 ( bro 1-10 BUT WHY 98 nah :p )")
+        elif payload["op"] == 99: # VOICE CHAT UPDATE
+            _LOG.info("test huh 99 ( bro 1-10 BUT WHY 99 ( oh 98 - 99 yeah ) nah :p )")
+        else:
+            _LOG.error(f"Unknown webdocket Message: {payload} ")
 
     @property
     def is_connected(self) -> bool:
@@ -88,7 +107,7 @@ class WS:
 
     async def send(self, payload):
         """
-        Send msg to websocket
+        Send payload to the websocket.
         """
         if not self.is_connected:
             _LOG.error("Not connected to websocket")
