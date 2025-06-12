@@ -1,9 +1,7 @@
 import aiohttp
 import logging
-import typing as t
 
 _LOG = logging.getLogger("kxspy.rest")
-
 
 class RestApi:
     """
