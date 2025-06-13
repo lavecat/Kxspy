@@ -1,14 +1,18 @@
+import kxspy
 import asyncio
 import aiohttp
 import logging
-import kxspy
+from kxspy.utils import get_random_username
 
 _LOG = logging.getLogger("Kxspy.ws")
 
 class WS:
     def __init__(
             self,
-            ws_url: str = "wss://network.kxs.rip/"
+            ws_url: str = "wss://network.kxs.rip/",
+            username: str = get_random_username(),
+            enablevoicechat: bool = False,
+            exchangekey: str = None
     ) -> None:
         self.ws = None
         self.ws_url = ws_url
@@ -16,7 +20,10 @@ class WS:
         self._session = aiohttp.ClientSession()
         self.is_connect: bool = False
         self.is_authenticate: bool = False
+        self.username = username
         self.version = f"kxspy/{kxspy.__version__}"
+        self.exchangeKey = exchangekey
+        self.enableVoiceChat = enablevoicechat
 
     def connect(self) -> asyncio.Task:
         """ Attempts to establish a connecion to Kxs Network. """
@@ -89,9 +96,11 @@ class WS:
             _LOG.info("test huh 7")
         elif payload["op"] == 10: # HELLO (heartbeat interval)
             interval = d.get("heartbeat_interval", 3000)
-            await self.send({"op": 2, "d": {"username": "Undevrdm:D", "isVoiceChat": False,"v":self.version}})  # Just for try
+            await self.send({"op": 2, "d": {"username": self.username, "isVoiceChat": self.enableVoiceChat,"v":self.version, "exchangeKey":self.exchangeKey}})
             await self.heartbeat(interval)
             _LOG.info("test huh 10")
+        elif payload["op"] == 12: # EXCHANGE JOIN
+            _LOG.info("test huh 12")
         elif payload["op"] == 87: # BROADCAST MESSAGE
             _LOG.info("test huh 87 ( bro 1-10 BUT WHY 87 nah :p )")
         elif payload["op"] == 98: # VOICE CHAT UPDATE
