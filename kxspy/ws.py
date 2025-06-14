@@ -2,9 +2,11 @@ import kxspy
 import asyncio
 import aiohttp
 import logging
-from kxspy.utils import get_random_username
+from .events import IdentifyEvent
+from .emitter import Emitter
+from .utils import get_random_username
 
-_LOG = logging.getLogger("Kxspy.ws")
+_LOG = logging.getLogger("kxspy.ws")
 
 class WS:
     def __init__(
@@ -18,6 +20,7 @@ class WS:
         self.ws_url = ws_url
         self._loop = asyncio.get_event_loop()
         self._session = aiohttp.ClientSession()
+        self.emitter = Emitter()
         self.is_connect: bool = False
         self.is_authenticate: bool = False
         self.username = username
@@ -84,6 +87,8 @@ class WS:
             _LOG.info("test huh 1")
         elif payload["op"] == 2: # IDENTIFY
             _LOG.info("test huh 2")
+            _LOG.info(payload)
+            self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**payload["d"]))
         elif payload["op"] == 3: # GAME START
             _LOG.info("test huh 3")
         elif payload["op"] == 4: # GAME END
