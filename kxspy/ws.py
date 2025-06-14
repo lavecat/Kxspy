@@ -2,7 +2,7 @@ import kxspy
 import asyncio
 import aiohttp
 import logging
-from .events import IdentifyEvent
+from .events import *
 from .emitter import Emitter
 from .utils import get_random_username
 
@@ -85,32 +85,44 @@ class WS:
         d = payload["d"]
         if payload["op"] == 1: # HEARTBEAT
             _LOG.info("test huh 1")
+            print(payload["d"])
         elif payload["op"] == 2: # IDENTIFY
             _LOG.info("test huh 2")
             _LOG.info(payload)
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**payload["d"]))
         elif payload["op"] == 3: # GAME START
             _LOG.info("test huh 3")
+            print(payload["d"])
         elif payload["op"] == 4: # GAME END
             _LOG.info("test huh 4")
+            print(payload["d"])
         elif payload["op"] == 5: # KILL EVENT
+            print(payload["d"])
             _LOG.info("test huh 5")
         elif payload["op"] == 6: # VERSION UPDATE
+            print(payload["d"])
             _LOG.info("test huh 6")
         elif payload["op"] == 7: # CHAT MESSAGE
+            print(payload["d"])
             _LOG.info("test huh 7")
         elif payload["op"] == 10: # HELLO (heartbeat interval)
+            print(payload["d"])
             interval = d.get("heartbeat_interval", 3000)
             await self.send({"op": 2, "d": {"username": self.username, "isVoiceChat": self.enableVoiceChat,"v":self.version, "exchangeKey":self.exchangeKey}})
             await self.heartbeat(interval)
             _LOG.info("test huh 10")
         elif payload["op"] == 12: # EXCHANGE JOIN
             _LOG.info("test huh 12")
+            self.emitter.emit("ExchangejoinEvent", ExchangejoinEvent.from_kwargs(**payload["d"]))
+            print(payload)
         elif payload["op"] == 87: # BROADCAST MESSAGE
+            print(payload["d"])
             _LOG.info("test huh 87 ( bro 1-10 BUT WHY 87 nah :p )")
         elif payload["op"] == 98: # VOICE CHAT UPDATE
+            print(payload["d"])
             _LOG.info("test huh 98 ( bro 1-10 BUT WHY 98 nah :p )")
         elif payload["op"] == 99: # VOICE CHAT UPDATE
+            print(payload["d"])
             _LOG.info("test huh 99 ( bro 1-10 BUT WHY 99 ( oh 98 - 99 yeah ) nah :p )")
         else:
             _LOG.error(f"Unknown webdocket Message: {payload} ")

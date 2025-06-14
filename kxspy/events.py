@@ -12,3 +12,11 @@ class IdentifyEvent(Event):
     IdentifyEvent. call when the websocket is ready.
     """
     uuid: str
+
+@dataclass
+class ExchangejoinEvent(Event):
+    """
+    Event on exchange join.
+    """
+    gameId: str
+    exchangeKey: str
