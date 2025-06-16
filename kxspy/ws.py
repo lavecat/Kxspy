@@ -85,6 +85,7 @@ class WS:
         d = payload["d"]
         if payload["op"] == 1: # HEARTBEAT
             _LOG.info("test huh 1")
+            self.emitter.emit("HeartBeatEvent", HeartBeatEvent.from_kwargs(**payload["d"]))
             print(payload["d"])
         elif payload["op"] == 2: # IDENTIFY
             _LOG.info("test huh 2")
@@ -92,6 +93,7 @@ class WS:
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**payload["d"]))
         elif payload["op"] == 3: # GAME START
             _LOG.info("test huh 3")
+            # self.emitter.emit("GameStart", GameStart.from_kwargs(**payload["d"]))
             print(payload["d"])
         elif payload["op"] == 4: # GAME END
             _LOG.info("test huh 4")
@@ -106,10 +108,11 @@ class WS:
             print(payload["d"])
             _LOG.info("test huh 7")
         elif payload["op"] == 10: # HELLO (heartbeat interval)
-            print(payload["d"])
+            print(f"10: %s",payload)
             interval = d.get("heartbeat_interval", 3000)
             await self.send({"op": 2, "d": {"username": self.username, "isVoiceChat": self.enableVoiceChat,"v":self.version, "exchangeKey":self.exchangeKey}})
             await self.heartbeat(interval)
+            self.emitter.emit("HelloEvent", HelloEvent.from_kwargs(**payload["d"]))
             _LOG.info("test huh 10")
         elif payload["op"] == 12: # EXCHANGE JOIN
             _LOG.info("test huh 12")
@@ -117,11 +120,12 @@ class WS:
             print(payload)
         elif payload["op"] == 87: # BROADCAST MESSAGE
             print(payload["d"])
+            self.emitter.emit("BroadCasteEvent", BroadCasteEvent.from_kwargs(**payload["d"]))
             _LOG.info("test huh 87 ( bro 1-10 BUT WHY 87 nah :p )")
         elif payload["op"] == 98: # VOICE CHAT UPDATE
             print(payload["d"])
             _LOG.info("test huh 98 ( bro 1-10 BUT WHY 98 nah :p )")
-        elif payload["op"] == 99: # VOICE CHAT UPDATE
+        elif payload["op"] == 99: # VOICE DATA
             print(payload["d"])
             _LOG.info("test huh 99 ( bro 1-10 BUT WHY 99 ( oh 98 - 99 yeah ) nah :p )")
         else:
@@ -144,3 +148,6 @@ class WS:
             _LOG.error("ConnectionResetError: Cannot write to closing transport")
             await self.check_connection()
             return
+
+    async def join_game(self, gameId):
+        await self.send({"op": 3, "d": {"gameId": gameId,"user": self.username}})
