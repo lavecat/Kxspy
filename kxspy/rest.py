@@ -95,7 +95,7 @@ class RestApi:
 
     async def user_manager_status(self) -> dict:
         """
-        This function makes a request to the kxs network REST API.
+        This function makes a request to the kxs network REST API ( kxs admin endpoint ).
 
         Returns
         -------
@@ -103,4 +103,16 @@ class RestApi:
             The response from the request.
         """
         res = await self.request("POST", "/users-manager/status",data={"adminKey":self.admin_key})
+        return res
+
+    async def blacklist(self, ip: str,reason: str) -> dict:
+        """
+        This function makes a request to the kxs network REST API ( kxs admin endpoint ).
+
+        Returns
+        -------
+        :class:`dict`
+            The response from the request.
+        """
+        res = await self.request("POST", "/users-manager/blacklist",data={"adminKey":self.admin_key,"ip":ip,"reason":reason})
         return res
