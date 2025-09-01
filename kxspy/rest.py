@@ -93,6 +93,18 @@ class RestApi:
         res = await self.request("GET", "/getLatestVersion")
         return res
 
+    async def on_join(self, gameid: int, exchangeKey: str) -> dict:
+        """
+        This function makes a request to the kxs network REST API.
+
+        Returns
+        -------
+        :class:`str`
+            The response from the request.
+        """
+        res = await self.request("GET", f"/exchange/joined/{gameid}/{exchangeKey}")
+        return res
+
     async def user_manager_status(self) -> dict:
         """
         This function makes a request to the kxs network REST API ( kxs admin endpoint ).
@@ -105,6 +117,18 @@ class RestApi:
         res = await self.request("POST", "/users-manager/status",data={"adminKey":self.admin_key})
         return res
 
+    async def broadcast(self, msg: str) -> dict:
+        """
+        This function makes a request to the kxs network REST API ( kxs admin endpoint ).
+
+        Returns
+        -------
+        :class:`dict`
+            The response from the request.
+        """
+        res = await self.request("POST", "/broadcast",data={"adminKey":self.admin_key,"msg":msg})
+        return res
+
     async def blacklist(self, ip: str,reason: str) -> dict:
         """
         This function makes a request to the kxs network REST API ( kxs admin endpoint ).
@@ -115,4 +139,16 @@ class RestApi:
             The response from the request.
         """
         res = await self.request("POST", "/users-manager/blacklist",data={"adminKey":self.admin_key,"ip":ip,"reason":reason})
+        return res
+
+    async def unblacklist(self, ip: str) -> dict:
+        """
+        This function makes a request to the kxs network REST API ( kxs admin endpoint ).
+
+        Returns
+        -------
+        :class:`dict`
+            The response from the request.
+        """
+        res = await self.request("POST", "/users-manager/unblacklist",data={"adminKey":self.admin_key,"ip":ip})
         return res
