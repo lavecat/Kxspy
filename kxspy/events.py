@@ -46,7 +46,12 @@ class HeartBeatEvent(Event):
     players: list
 
 @dataclass
+class ConfirmGameStart(BaseObject):
+    ok: bool
+    usernameChanged: bool
+
+@dataclass
 class GameStart(BaseObject):
     ok: bool
-    players: List[str] = field(default_factory=list)
-    usernameChanged: Optional[bool] = None
+    system: bool
+    players: list

@@ -93,7 +93,10 @@ class WS:
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**payload["d"]))
         elif payload["op"] == 3: # GAME START
             _LOG.info("test huh 3")
-            # self.emitter.emit("GameStart", GameStart.from_kwargs(**payload["d"]))
+            if d.get("system") is not None:
+                self.emitter.emit("ConfirmGameStart", ConfirmGameStart.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("GameStart", GameStart.from_kwargs(**payload["d"]))
             print(payload["d"])
         elif payload["op"] == 4: # GAME END
             _LOG.info("test huh 4")
