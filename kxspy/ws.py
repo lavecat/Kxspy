@@ -100,15 +100,22 @@ class WS:
             print(payload["d"])
         elif payload["op"] == 4: # GAME END
             _LOG.info("test huh 4")
-            print(payload["d"])
+            if d.get("left", None) is not None:
+                self.emitter.emit("GameEnd", GameEnd.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmGameEnd", ConfirmGameEnd.from_kwargs(**payload["d"]))
+            print(payload)
         elif payload["op"] == 5: # KILL EVENT
             print(payload["d"])
+            self.emitter.emit("KillEvent", KillEvent.from_kwargs(**payload["d"]))
             _LOG.info("test huh 5")
         elif payload["op"] == 6: # VERSION UPDATE
             print(payload["d"])
+            self.emitter.emit("VersionUpdate", VersionUpdate.from_kwargs(**payload["d"]))
             _LOG.info("test huh 6")
         elif payload["op"] == 7: # CHAT MESSAGE
-            print(payload["d"])
+            print(payload)
+            self.emitter.emit("ChatMessage", ChatMessage.from_kwargs(**payload["d"]))
             _LOG.info("test huh 7")
         elif payload["op"] == 10: # HELLO (heartbeat interval)
             print(f"10: %s",payload)
@@ -126,10 +133,15 @@ class WS:
             self.emitter.emit("BroadCasteEvent", BroadCasteEvent.from_kwargs(**payload["d"]))
             _LOG.info("test huh 87 ( bro 1-10 BUT WHY 87 nah :p )")
         elif payload["op"] == 98: # VOICE CHAT UPDATE
-            print(payload["d"])
+            print(payload)
+            if d.get("user", None) is not None:
+                self.emitter.emit("VoiceChatUpdate", VoiceChatUpdate.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmVoiceChatUpdate", ConfirmVoiceChatUpdate.from_kwargs(**payload["d"]))
             _LOG.info("test huh 98 ( bro 1-10 BUT WHY 98 nah :p )")
         elif payload["op"] == 99: # VOICE DATA
-            print(payload["d"])
+            #print(payload)
+            self.emitter.emit("VoiceData", VoiceData(d=d,u=payload["u"]))
             _LOG.info("test huh 99 ( bro 1-10 BUT WHY 99 ( oh 98 - 99 yeah ) nah :p )")
         else:
             _LOG.error(f"Unknown webdocket Message: {payload} ")

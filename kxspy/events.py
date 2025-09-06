@@ -1,6 +1,6 @@
 from .objects import BaseObject
 from dataclasses import dataclass , field
-from typing import List, Optional
+from typing import Any
 
 class Event(BaseObject):
     """
@@ -47,17 +47,80 @@ class HeartBeatEvent(Event):
 
 @dataclass
 class ConfirmGameStart(BaseObject):
+    """
+    Event on ConfirmGameStart.
+    """
     ok: bool
     usernameChanged: bool
 
 @dataclass
 class GameStart(BaseObject):
+    """
+    Event on GameStart.
+    """
     ok: bool
     system: bool
     players: list
 
 @dataclass
 class GameEnd(BaseObject):
+    """
+    Event on GameEnd.
+    """
+    left: str
+
+@dataclass
+class ConfirmGameEnd(BaseObject):
+    """
+    Event on GameEnd.
+    """
     ok: bool
+
+@dataclass
+class KillEvent(BaseObject):
+    """
+    Event on KillEvent.
+    """
+    killer: str
+    killed: str
+    timestamp: int
+
+@dataclass
+class VersionUpdate(BaseObject):
+    """
+    Event on VersionUpdate.
+    """
+    v: str
+
+@dataclass
+class ChatMessage(BaseObject):
+    """
+    Event on ChatMessage.
+    """
+    user: str
+    text: str
+    timestamp: int
     system: bool
-    players: list
+
+@dataclass
+class VoiceData(BaseObject):
+    """
+    Event on VoiceData.
+    """
+    d: list
+    u: str
+
+@dataclass
+class VoiceChatUpdate(BaseObject):
+    """
+    Event on VoiceChatUpdate.
+    """
+    user: str
+    isVoiceChat: bool
+
+@dataclass
+class ConfirmVoiceChatUpdate(BaseObject):
+    """
+    Event on ConfirmVoiceChatUpdate.
+    """
+    ok: bool
