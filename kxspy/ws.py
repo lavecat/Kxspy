@@ -93,10 +93,10 @@ class WS:
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**payload["d"]))
         elif payload["op"] == 3: # GAME START
             _LOG.info("test huh 3")
-            if d.get("system") is not None:
-                self.emitter.emit("ConfirmGameStart", ConfirmGameStart.from_kwargs(**payload["d"]))
-            else:
+            if d.get("system", None) is not None:
                 self.emitter.emit("GameStart", GameStart.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmGameStart", ConfirmGameStart.from_kwargs(**payload["d"]))
             print(payload["d"])
         elif payload["op"] == 4: # GAME END
             _LOG.info("test huh 4")
@@ -154,3 +154,6 @@ class WS:
 
     async def join_game(self, gameId):
         await self.send({"op": 3, "d": {"gameId": gameId,"user": self.username}})
+
+    async def leave_game(self):
+        await self.send({"op": 4, "d": {} })

@@ -55,3 +55,9 @@ class GameStart(BaseObject):
     ok: bool
     system: bool
     players: list
+
+@dataclass
+class GameEnd(BaseObject):
+    ok: bool
+    system: bool
+    players: list
