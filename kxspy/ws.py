@@ -28,6 +28,7 @@ class WS:
         self.exchangeKey = exchangekey
         self.enableVoiceChat = enablevoicechat
 
+
     def connect(self) -> asyncio.Task:
         """ Attempts to establish a connecion to Kxs Network. """
         return self._loop.create_task(self._connect())
