@@ -68,3 +68,21 @@ class Emitter:
                 self._loop.create_task(event["func"](data))
             else:
                 _LOG.error("Events only async function")
+
+    def on(self, event: t.Union[str, Event]):
+        """
+        Decorator to register async event handler.
+
+        Example:
+            @emitter.on("ChatMessage")
+            async def handler(data): ...
+        """
+        event_name = event if isinstance(event, str) else event.__name__
+
+        def decorator(func: t.Callable):
+            if not asyncio.iscoroutinefunction(func):
+                raise TypeError(f"Handler for event '{event_name}' must be async")
+            self.add_listener(event_name, func)
+            return func
+
+        return decorator

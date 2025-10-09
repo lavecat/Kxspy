@@ -1,5 +1,7 @@
 import logging
+import typing as t
 from .ws import WS
+from .events import Event
 from .utils import get_random_username
 
 _LOG = logging.getLogger("kxspy.client")
@@ -21,7 +23,25 @@ class Client:
             enablevoicechat=enablevoicechat,
             exchangekey=exchangekey,
         )
+        self.username = username
+
+    def listen(self, event: t.Union[str, Event]):
+        """
+        Decorator shortcut for self.ws.emitter.on(event)
+        Example:
+            @client.on("ChatMessage")
+            async def on_chat(evt): ...
+        """
+        return self.ws.emitter.on(event)
 
     async def connect(self):
         """Connect to Kxs Network."""
         await self.ws._connect()
+
+    async def join_game(self, gameId):
+        """Join a game by its ID."""
+        await self.ws.send({"op": 3, "d": {"gameId": gameId,"user": self.username}})
+
+    async def leave_game(self):
+        """Leave the current game."""
+        await self.ws.send({"op": 4, "d": {}})
