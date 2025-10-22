@@ -3,6 +3,7 @@ import typing as t
 from .ws import WS
 from .events import Event
 from .utils import get_random_username
+from .rest import RestApi
 
 _LOG = logging.getLogger("kxspy.client")
 
@@ -13,9 +14,11 @@ class Client:
     def __init__(
         self,
         ws_url: str = "wss://network.kxs.rip/",
+        rest_url: str = "https://network.kxs.rip",
         username: str = get_random_username(),
         enablevoicechat: bool = False,
-        exchangekey: str = None
+        exchangekey: str = None,
+        admin_key: str = None
     ) -> None:
         self.ws = WS(
             ws_url=ws_url,
@@ -24,6 +27,7 @@ class Client:
             exchangekey=exchangekey,
         )
         self.username = username
+        self.rest = RestApi(rest_url,admin_key)
 
     def listen(self, event: t.Union[str, Event]):
         """
