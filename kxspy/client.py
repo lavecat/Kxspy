@@ -79,7 +79,7 @@ class Client:
 
     async def report_kill(self,killer: str, killed: str):
         """Report a kill in the game"""
-        await self.ws.send({"op": 5, "d": {killer,killed}})
+        await self.ws.send({"op": 5, "d": {"killer":killer,"killed":killed}})
 
     async def check_version(self):
         """Report a kill in the game"""
@@ -87,11 +87,11 @@ class Client:
 
     async def send_message(self,text: str):
         """Report a kill in the game"""
-        await self.ws.send({"op": 7, "d": {text}})
+        await self.ws.send({"op": 7, "d": {"text":text}})
 
     async def update_voicechat(self,isVoiceChat: bool):
         """Report a kill in the game"""
-        await self.ws.send({"op": 98, "d": {isVoiceChat}})
+        await self.ws.send({"op": 98, "d": {"isVoiceChat":isVoiceChat}})
 
 
 
