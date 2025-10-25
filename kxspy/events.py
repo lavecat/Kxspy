@@ -82,7 +82,7 @@ class HeartBeatEvent(Event):
     players: list
 
 @dataclass
-class ConfirmGameStart(BaseObject):
+class ConfirmGameStart(Event):
     """
     Event on ConfirmGameStart.
     """
@@ -90,7 +90,7 @@ class ConfirmGameStart(BaseObject):
     usernameChanged: bool
 
 @dataclass
-class GameStart(BaseObject):
+class GameStart(Event):
     """
     Event on GameStart.
     """
@@ -99,21 +99,21 @@ class GameStart(BaseObject):
     players: list
 
 @dataclass
-class GameEnd(BaseObject):
+class GameEnd(Event):
     """
     Event on GameEnd.
     """
     left: str
 
 @dataclass
-class ConfirmGameEnd(BaseObject):
+class ConfirmGameEnd(Event):
     """
     Event on GameEnd.
     """
     ok: bool
 
 @dataclass
-class KillEvent(BaseObject):
+class KillEvent(Event):
     """
     Event on KillEvent.
     """
@@ -122,14 +122,14 @@ class KillEvent(BaseObject):
     timestamp: int
 
 @dataclass
-class VersionUpdate(BaseObject):
+class VersionUpdate(Event):
     """
     Event on VersionUpdate.
     """
     v: str
 
 @dataclass
-class ChatMessage(BaseObject):
+class ChatMessage(Event):
     """
     Event on ChatMessage.
     """
@@ -139,7 +139,7 @@ class ChatMessage(BaseObject):
     system: bool
 
 @dataclass
-class VoiceData(BaseObject):
+class VoiceData(Event):
     """
     Event on VoiceData.
     """
@@ -147,7 +147,7 @@ class VoiceData(BaseObject):
     u: str
 
 @dataclass
-class VoiceChatUpdate(BaseObject):
+class VoiceChatUpdate(Event):
     """
     Event on VoiceChatUpdate.
     """
@@ -155,7 +155,7 @@ class VoiceChatUpdate(BaseObject):
     isVoiceChat: bool
 
 @dataclass
-class ConfirmVoiceChatUpdate(BaseObject):
+class ConfirmVoiceChatUpdate(Event):
     """
     Event on ConfirmVoiceChatUpdate.
     """
