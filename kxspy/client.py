@@ -1,8 +1,10 @@
 import logging
 import typing as t
+import numpy as np
 from .ws import WS
 from .events import Event
 from .utils import get_random_username
+from typing import Union, List, Optional
 from .rest import RestApi
 
 _LOG = logging.getLogger("kxspy.client")
@@ -82,16 +84,31 @@ class Client:
         await self.ws.send({"op": 5, "d": {"killer":killer,"killed":killed}})
 
     async def check_version(self):
-        """Report a kill in the game"""
+        """Check for the latest version of Kxs"""
         await self.ws.send({"op": 6, "d": {}})
 
     async def send_message(self,text: str):
-        """Report a kill in the game"""
+        """Send a message to the in-game chat"""
         await self.ws.send({"op": 7, "d": {"text":text}})
 
     async def update_voicechat(self,isVoiceChat: bool):
-        """Report a kill in the game"""
+        """Update the voice chat status"""
         await self.ws.send({"op": 98, "d": {"isVoiceChat":isVoiceChat}})
+
+    async def send_voicedata(self, audio_data: Union[bytes, bytearray,np.ndarray, List[int]], user_id: Optional[str] = None):
+        """Update the voice chat status"""
+        if isinstance(audio_data, (bytes, bytearray)):
+            int16_array = np.frombuffer(audio_data, dtype=np.int16)
+            data_to_send = int16_array.tolist()
+        elif isinstance(audio_data, np.ndarray) and audio_data.dtype == np.int16:
+            data_to_send = audio_data.tolist()
+        elif isinstance(audio_data, list):
+            data_to_send = audio_data
+        else:
+            raise TypeError(
+                "audio_data must be bytes, bytearray, numpy.ndarray[int16], or list[int]"
+            )
+        await self.ws.send({"op": 99, "d": data_to_send, "u":user_id or self.ws.uuid})
 
 
 

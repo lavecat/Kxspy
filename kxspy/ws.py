@@ -35,6 +35,7 @@ class WS:
 
         self.is_connect: bool = False
         self.is_authenticated: bool = False
+        self.uuid = None
 
         self.emitter = Emitter()
         self.version = f"kxspy/{kxspy.__version__}"
@@ -161,6 +162,7 @@ class WS:
         if op == 1:  # Heartbeat
             self.emitter.emit("HeartBeatEvent", HeartBeatEvent.from_kwargs(**d))
         elif op == 2:  # Identify
+            self.uuid = d.get("uuid")
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**d))
         elif op == 3:  # Game start
             event = GameStart.from_kwargs(**d) if d.get("system") else ConfirmGameStart.from_kwargs(**d)
@@ -242,3 +244,7 @@ class WS:
     @property
     def is_connected(self) -> bool:
         return self.is_connect and self._ws.closed is False
+
+    @property
+    def uuid(self) -> bool:
+        return self.uuid
