@@ -9,10 +9,12 @@ __title__ = 'kxspy'
 __author__ = 'lavecat'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2025-present lavecat'
-__version__ = '1.0.0-DEV'
+__version__ = '1.0.0a'
 
 from .client import Client
-from .events import Event
+from .objects import *
+from .events import *
+from .rest import RestApi
 from typing import Type, Callable
 
 
