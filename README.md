@@ -1,6 +1,6 @@
 <div align="center">
   <img 
-    src="https://github.com/lavecat/Kxspy/blob/main/asset/Kxspy_logo.png" 
+    src="https://github.com/lavecat/Kxspy/blob/main/asset/kxspy_banner.png" 
     alt="kxspy Banner" 
     style="border-radius: 5px;">
   <h1>Kxspy</h1>
