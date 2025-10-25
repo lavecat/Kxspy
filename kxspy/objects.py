@@ -1,4 +1,5 @@
 from inspect import signature
+from dataclasses import dataclass
 
 # https://stackoverflow.com/questions/55099243/python3-dataclass-with-kwargsasterisk
 class BaseObject:
@@ -22,3 +23,17 @@ class BaseObject:
         for new_name, new_val in new_args.items():
             setattr(ret, new_name, new_val)
         return ret
+
+@dataclass
+class Stuff(BaseObject):
+    main_weapon: str
+    secondary_weapon: str
+    soda: int
+    melees: str
+    grenades: str
+    medkit: int
+    bandage: int
+    pills: int
+    backpack: str
+    chest: str
+    helmet: str

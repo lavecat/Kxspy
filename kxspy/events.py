@@ -1,4 +1,4 @@
-from .objects import BaseObject
+from .objects import BaseObject , Stuff
 from dataclasses import dataclass , field
 from typing import Any
 
@@ -21,6 +21,42 @@ class ExchangejoinEvent(Event):
     """
     gameId: str
     exchangeKey: str
+
+@dataclass
+class ExchangeOnlineEvent(Event):
+    """
+    Event on exchange key online.
+    """
+    username: str
+    v: str
+
+@dataclass
+class ExchangeOfflineEvent(Event):
+    """
+    Event on exchange key offline.
+    """
+    username: str
+
+@dataclass
+class ExchangeGameAliveEvent(Event):
+    """
+    Event on exchange key Game Alive.
+    """
+    alive: int
+
+@dataclass
+class ExchangeGameEnd(Event):
+    """
+    Event on exchange key Game End.
+    """
+    username: str
+    kills: int
+    damageDealt: int
+    damageTaken: int
+    duration: str
+    position: str
+    isWin: bool
+    stuff: Stuff
 
 @dataclass
 class BroadCasteEvent(Event):

@@ -179,8 +179,18 @@ class WS:
             await self.send({"op": 2,"d":{"username":self.username,"isVoiceChat":self.enable_voice_chat,"v":self.version,"exchangeKey":self.exchange_key}})
             await self._start_heartbeat(interval)
             self.emitter.emit("HelloEvent", HelloEvent.from_kwargs(**d))
-        elif op == 12: # EXCHANGE JOIN
+        elif op == 12: # EXCHANGE KEY JOIN
             self.emitter.emit("ExchangejoinEvent", ExchangejoinEvent.from_kwargs(**d))
+        elif op == 13: # EXCHANGE KEY ONLINE
+            self.emitter.emit("ExchangeOnlineEvent", ExchangeOnlineEvent.from_kwargs(**d))
+        elif op == 14: # EXCHANGE KEY OFFLINE
+            self.emitter.emit("ExchangeOfflineEvent", ExchangeOfflineEvent.from_kwargs(**d))
+        elif op == 15: # GAME ALIVE EXCHANGE KEY
+            self.emitter.emit("ExchangeGameAliveEvent", ExchangeGameAliveEvent.from_kwargs(**d))
+        elif op == 16: # GAME END EXCHANGE KEY
+            print(payload)
+            d["data"]["stuff"] = Stuff.from_kwargs(**d["data"]["stuff"])
+            self.emitter.emit("ExchangeGameEnd", ExchangeGameEnd.from_kwargs(**d["data"]))
         elif op == 87: # BROADCAST MESSAGE
             self.emitter.emit("BroadCasteEvent", BroadCasteEvent.from_kwargs(**d))
             _LOG.info("Received BroadcastEvent (op 87).")
