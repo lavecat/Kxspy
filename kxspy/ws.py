@@ -35,7 +35,7 @@ class WS:
 
         self.is_connect: bool = False
         self.is_authenticated: bool = False
-        self.uuid = None
+        self._uuid = None
 
         self.emitter = Emitter()
         self.version = f"kxspy/{kxspy.__version__}"
@@ -247,4 +247,4 @@ class WS:
 
     @property
     def uuid(self) -> bool:
-        return self.uuid
+        return self._uuid
