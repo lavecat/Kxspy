@@ -6,9 +6,29 @@ from .emitter import Emitter
 from .utils import get_random_username
 from .events import *
 
+
 _LOG = logging.getLogger("kxspy.ws")
 
 MESSAGE_QUEUE_MAX_SIZE = 25
+
+OP_EVENT_NAMES = {
+    1: "HeartBeatEvent",
+    2: "IdentifyEvent",
+    3: "GameStart",
+    4: "GameEnd",
+    5: "KillEvent",
+    6: "VersionUpdate",
+    7: "ChatMessage",
+    10: "HelloEvent",
+    12: "ExchangejoinEvent",
+    13: "ExchangeOnlineEvent",
+    14: "ExchangeOfflineEvent",
+    15: "ExchangeGameAliveEvent",
+    16: "ExchangeGameEnd",
+    87: "BroadCasteEvent",
+    98: "VoiceChatUpdate",
+    99: "VoiceData",
+}
 
 class WS:
     """Handles the WebSocket connection to the Kxs network."""
@@ -158,24 +178,37 @@ class WS:
     async def _handle_message(self, payload: dict):
         op = payload.get("op")
         d = payload.get("d", {})
-
-        if op == 1:  # Heartbeat
+        if d.get("error", None) is not None:
+            event_name = OP_EVENT_NAMES.get(op, f"UnknownEvent(op={op})")
+            self.emitter.emit(
+                "ErrorEvent",
+                ErrorEvent(event=event_name, error=d.get("error", "Unknown error"),op=op)
+            )
+            return
+        elif op == 1:  # Heartbeat
             self.emitter.emit("HeartBeatEvent", HeartBeatEvent.from_kwargs(**d))
         elif op == 2:  # Identify
-            self.uuid = d.get("uuid")
+            self._uuid = d.get("uuid")
             self.emitter.emit("IdentifyEvent", IdentifyEvent.from_kwargs(**d))
         elif op == 3:  # Game start
-            event = GameStart.from_kwargs(**d) if d.get("system") else ConfirmGameStart.from_kwargs(**d)
-            self.emitter.emit(event.__class__.__name__, event)
+            if d.get("system", None) is not None:
+                self.emitter.emit("GameStart", GameStart.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmGameStart", ConfirmGameStart.from_kwargs(**payload["d"]))
         elif op == 4:  # Game end
-            event = GameEnd.from_kwargs(**d) if d.get("left") else ConfirmGameEnd.from_kwargs(**d)
-            self.emitter.emit(event.__class__.__name__, event)
+            if d.get("left", None) is not None:
+                self.emitter.emit("GameEnd", GameEnd.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmGameEnd", ConfirmGameEnd.from_kwargs(**payload["d"]))
         elif op == 5: # KILL EVENT
             self.emitter.emit("KillEvent", KillEvent.from_kwargs(**d))
         elif op == 6: # VERSION UPDATE
             self.emitter.emit("VersionUpdate", VersionUpdate.from_kwargs(**d))
         elif op == 7: # CHAT MESSAGE
-            self.emitter.emit("ChatMessage", ChatMessage.from_kwargs(**d))
+            if d.get("user", None) is not None:
+                self.emitter.emit("ChatMessage", ChatMessage.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmChatMessage", ConfirmChatMessage.from_kwargs(**payload["d"]))
         elif op == 10:  # Hello (heartbeat interval)
             interval = d.get("heartbeat_interval", 3000)
             await self.send({"op": 2,"d":{"username":self.username,"isVoiceChat":self.enable_voice_chat,"v":self.version,"exchangeKey":self.exchange_key}})
@@ -190,19 +223,16 @@ class WS:
         elif op == 15: # GAME ALIVE EXCHANGE KEY
             self.emitter.emit("ExchangeGameAliveEvent", ExchangeGameAliveEvent.from_kwargs(**d))
         elif op == 16: # GAME END EXCHANGE KEY
-            print(payload)
             d["data"]["stuff"] = Stuff.from_kwargs(**d["data"]["stuff"])
             self.emitter.emit("ExchangeGameEnd", ExchangeGameEnd.from_kwargs(**d["data"]))
         elif op == 87: # BROADCAST MESSAGE
             self.emitter.emit("BroadCasteEvent", BroadCasteEvent.from_kwargs(**d))
             _LOG.info("Received BroadcastEvent (op 87).")
         elif op == 98: # VOICE CHAT UPDATE
-            event = (
-                VoiceChatUpdate.from_kwargs(**d)
-                if d.get("user")
-                else ConfirmVoiceChatUpdate.from_kwargs(**d)
-            )
-            self.emitter.emit(event.__class__.__name__, event)
+            if d.get("user", None) is not None:
+                self.emitter.emit("VoiceChatUpdate", VoiceChatUpdate.from_kwargs(**payload["d"]))
+            else:
+                self.emitter.emit("ConfirmVoiceChatUpdate", ConfirmVoiceChatUpdate.from_kwargs(**payload["d"]))
         elif op == 99: # VOICE DATA
             self.emitter.emit("VoiceData", VoiceData(d=d, u=payload.get("u")))
         else:

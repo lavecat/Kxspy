@@ -139,6 +139,13 @@ class ChatMessage(Event):
     system: bool
 
 @dataclass
+class ConfirmChatMessage(Event):
+    """
+    Event on ChatMessageConfirm.
+    """
+    ok: bool
+
+@dataclass
 class VoiceData(Event):
     """
     Event on VoiceData.
@@ -160,3 +167,12 @@ class ConfirmVoiceChatUpdate(Event):
     Event on ConfirmVoiceChatUpdate.
     """
     ok: bool
+
+@dataclass
+class ErrorEvent(Event):
+    """
+    Event on ErrorEvent.
+    """
+    op: int
+    event: str
+    error: str
