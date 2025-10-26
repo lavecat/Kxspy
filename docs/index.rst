@@ -6,8 +6,8 @@ Welcome to kxspy's documentation!
 .. |b4| image:: https://img.shields.io/github/stars/lavecat/kxspy
 .. |b5| image:: https://img.shields.io/github/forks/lavecat/kxspy
 
-The lavaplay.py documentation is a collection of guides and tutorials that
-explain how to use lavaplay.py.
+The kxspy documentation is a collection of guides and tutorials that
+explain how to use kxspy.
 
 |b1| |b2|
 
@@ -15,7 +15,7 @@ explain how to use lavaplay.py.
 
 |b3|
 
-Repository: `View on GitHub <https://github.com/HazemMeqdad/kxspy>`_
+Repository: `View on GitHub <https://github.com/lavecat/kxspy>`_
 
 Docs: `View Here <https://kxspy.readthedocs.io/>`_
 
