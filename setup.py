@@ -21,7 +21,6 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/lavecat/Kxspy',
     author='lavecat',
-    author_email='x',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
