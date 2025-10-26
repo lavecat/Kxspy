@@ -8,7 +8,7 @@
   <div>&nbsp;</div>
 </div>
 
-> [!NOTE]
+> [!WARNING]
 > Kxspy is in beta version, so some features may not work as expected.
 > Please report any issues you encounter on the GitHub repository.
 
