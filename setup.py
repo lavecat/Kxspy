@@ -40,6 +40,6 @@ setup(
     project_urls={
         'Bug Reports': 'https://github.com/lavecat/Kxspy/issues',
         'Source': 'https://github.com/lavecat/Kxspy',
-        'Documentation': 'https://github.com/lavecat/Kxspy'
+        'Documentation': 'https://kxspy.readthedocs.io/'
     },
 )
