@@ -23,8 +23,8 @@ pip install kxspy
 
 
 ## Need help ?
-- Discord server : xxx
-- Documentation : xxx
+- Discord server : https://discord.wf/kxsclient ( mention @lirus_12345 for help )
+- Documentation : xxx ( in progress )
 
 
 
