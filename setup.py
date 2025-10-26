@@ -37,7 +37,7 @@ setup(
     ],
     keywords='kxsclient, surviv, kxspy, kxs, kxsnetwork',
     packages=["kxspy"],
-    install_requires=["aiohttp,numpy"],
+    install_requires=["aiohttp","numpy"],
     project_urls={
         'Bug Reports': 'https://github.com/lavecat/Kxspy/issues',
         'Source': 'https://github.com/lavecat/Kxspy',
