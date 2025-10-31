@@ -3,6 +3,7 @@ import logging
 import aiohttp
 import kxspy
 from .emitter import Emitter
+from time import perf_counter
 from .utils import get_random_username
 from .events import *
 
@@ -39,6 +40,7 @@ class WS:
         enable_voice_chat: bool = False,
         exchange_key: str | None = None,
         connect: bool = True,
+        session: aiohttp.ClientSession | None = None
     ):
         self.ws_url = ws_url
         self.username = username or get_random_username()
@@ -46,7 +48,7 @@ class WS:
         self.exchange_key = exchange_key
 
         self._loop = asyncio.get_event_loop()
-        self._session = aiohttp.ClientSession()
+        self._session = session or aiohttp.ClientSession()
         self._ws: aiohttp.ClientWebSocketResponse | None = None
         self._message_queue: list[dict] = []
         self._listen_task: asyncio.Task | None = None
@@ -101,6 +103,31 @@ class WS:
                     await asyncio.sleep(delay)
                 else:
                     _LOG.error(f"Exception WS: {error}")
+
+    async def measure_latency(self, timeout: float = 5.0) -> float:
+        if not self.is_connected:
+            raise ConnectionError("WebSocket is not connected.")
+
+        fut = asyncio.get_event_loop().create_future()
+        start = perf_counter()
+
+        async def on_version_update(_event):
+            try:
+                self.emitter.remove_listener("VersionUpdate", on_version_update)
+            except ValueError:
+                pass
+            if not fut.done():
+                fut.set_result((perf_counter() - start) * 1000)
+
+        self.emitter.add_listener("VersionUpdate", on_version_update)
+        await self.send({"op": 6, "d": {}})
+
+        try:
+            latency = await asyncio.wait_for(fut, timeout)
+            return latency
+        except asyncio.TimeoutError:
+            _LOG.error("Timeout : VersionUpdate did not arrive in time ( mesure_latency ).")
+            return None
 
     async def close(self, code=aiohttp.WSCloseCode.OK):
         if self._listen_task:
@@ -178,6 +205,7 @@ class WS:
     async def _handle_message(self, payload: dict):
         op = payload.get("op")
         d = payload.get("d", {})
+
         if d.get("error", None) is not None:
             event_name = OP_EVENT_NAMES.get(op, f"UnknownEvent(op={op})")
             self.emitter.emit(
@@ -185,7 +213,7 @@ class WS:
                 ErrorEvent(event=event_name, error=d.get("error", "Unknown error"),op=op)
             )
             return
-        elif op == 1:  # Heartbeat
+        if op == 1:  # Heartbeat
             self.emitter.emit("HeartBeatEvent", HeartBeatEvent.from_kwargs(**d))
         elif op == 2:  # Identify
             self._uuid = d.get("uuid")

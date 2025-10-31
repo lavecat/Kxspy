@@ -1,5 +1,6 @@
 import aiohttp
 import logging
+from time import time
 
 _LOG = logging.getLogger("kxspy.rest")
 
@@ -14,9 +15,10 @@ class RestApi:
     adminKey: :class:`str`
         Only for admin routs .
     """
-    def __init__(self, kxs_network_rest_url: str = "https://network.kxs.rip", adminKey: str = None) -> None:
+    def __init__(self, kxs_network_rest_url: str = "https://network.kxs.rip", adminKey: str = None, session: aiohttp.ClientSession = None) -> None:
         self.rest_uri = kxs_network_rest_url
         self.admin_key = adminKey
+        self.session = session or aiohttp.ClientSession()
 
     async def request(self, method: str, rout: str, data: dict = {}) -> dict or str:
         """
@@ -37,19 +39,18 @@ class RestApi:
             The response from the request.
         """
         rout = rout
-        async with aiohttp.ClientSession() as session:
-            async with session.request(method, self.rest_uri + rout,json=data) as _response:
-                _LOG.debug(f"{method} {self.rest_uri + rout}")
-                if _response.content_type == "text/plain":
-                    return await _response.text()
+        async with self.session.request(method, self.rest_uri + rout,json=data) as _response:
+            _LOG.debug(f"{method} {self.rest_uri + rout}")
+            if _response.content_type == "text/plain":
+                return await _response.text()
 
-                response = await _response.json()
+            response = await _response.json()
 
-                _LOG.debug(response)
+            _LOG.debug(response)
 
-                if _response.status != 200:
-                    _LOG.error(f"Request failed: {response}")
-                return response
+            if _response.status != 200:
+                _LOG.error(f"Request failed: {response}")
+            return response
 
 
     async def online_count(self) -> dict:
@@ -152,3 +153,23 @@ class RestApi:
         """
         res = await self.request("POST", "/users-manager/unblacklist",data={"adminKey":self.admin_key,"ip":ip})
         return res
+
+
+    async def get_rest_latency(self) -> float:
+        """|coro|
+
+        Measures the REST latency for this node.
+        This simply calls :func:`get_version` but measures the time between when the request was made,
+        and when a response was received.
+
+        Returns
+        -------
+        float
+            The latency, in milliseconds. ``-1`` if an error occurred during the request (e.g. node is unreachable),
+            otherwise, a positive number.
+        """
+        start = time()
+
+        await self.online_count()
+
+        return (time() - start) * 1000

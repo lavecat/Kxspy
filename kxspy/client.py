@@ -1,6 +1,7 @@
 import logging
 import typing as t
 import numpy as np
+import aiohttp
 from .ws import WS
 from .events import Event
 from .utils import get_random_username
@@ -22,16 +23,18 @@ class Client:
         exchangekey: str = None,
         admin_key: str = None,
         connect: bool = True,
+        session: t.Optional[aiohttp.ClientSession] = None
     ) -> None:
         self.ws = WS(
             ws_url=ws_url,
             username=username,
             enable_voice_chat=enablevoicechat,
             exchange_key=exchangekey,
-            connect=connect
+            connect=connect,
+            session=session
         )
         self.username = username
-        self.rest = RestApi(rest_url,admin_key)
+        self.rest = RestApi(rest_url,admin_key,session)
         self.emitter = self.ws.emitter
         self._registered_listeners: t.List[t.Tuple[t.Any, t.Callable, t.Type[Event]]] = []
 
@@ -70,6 +73,10 @@ class Client:
     async def connect(self):
         """Connect to Kxs Network."""
         await self.ws.connect()
+
+    async def close(self):
+        """Close connection to Kxs Network."""
+        await self.ws.close()
 
     async def join_game(self, gameId):
         """Join a game by its ID."""
@@ -110,5 +117,7 @@ class Client:
             )
         await self.ws.send({"op": 99, "d": data_to_send, "u":user_id or self.ws.uuid})
 
-
+    async def ws_latency(self):
+        """Send the latency of websocket"""
+        return await self.ws.measure_latency()
 
