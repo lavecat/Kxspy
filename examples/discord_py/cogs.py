@@ -13,7 +13,9 @@ class cog(commands.Cog):
             username="Username",
             enablevoicechat=False,
             exchangekey="your_exchange_key_here",
-            connect=True # Connect automatically or false to mannualy
+            connect=True, # Connect automatically or false to mannualy
+            isMobile=False,
+            isSecure=True
         )
         self.kxs: kxspy.client.Client = bot.kxs
         self.kxs.add_event_hooks(self)

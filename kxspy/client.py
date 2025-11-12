@@ -21,6 +21,8 @@ class Client:
         username: str = get_random_username(),
         enablevoicechat: bool = False,
         exchangekey: str = None,
+        isMobile: bool = False,
+        isSecure: bool = True,
         admin_key: str = None,
         connect: bool = True,
         session: t.Optional[aiohttp.ClientSession] = None
@@ -31,6 +33,8 @@ class Client:
             enable_voice_chat=enablevoicechat,
             exchange_key=exchangekey,
             connect=connect,
+            isMobile=isMobile,
+            isSecure=isSecure,
             session=session
         )
         self.username = username

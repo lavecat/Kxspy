@@ -40,12 +40,16 @@ class WS:
         enable_voice_chat: bool = False,
         exchange_key: str | None = None,
         connect: bool = True,
+        isMobile: bool = False,
+        isSecure: bool = True,
         session: aiohttp.ClientSession | None = None
     ):
         self.ws_url = ws_url
         self.username = username or get_random_username()
         self.enable_voice_chat = enable_voice_chat
         self.exchange_key = exchange_key
+        self.isMobile = isMobile
+        self.isSecure = isSecure
 
         self._loop = asyncio.get_event_loop()
         self._session = session or aiohttp.ClientSession()
@@ -239,7 +243,7 @@ class WS:
                 self.emitter.emit("ConfirmChatMessage", ConfirmChatMessage.from_kwargs(**payload["d"]))
         elif op == 10:  # Hello (heartbeat interval)
             interval = d.get("heartbeat_interval", 3000)
-            await self.send({"op": 2,"d":{"username":self.username,"isVoiceChat":self.enable_voice_chat,"v":self.version,"exchangeKey":self.exchange_key}})
+            await self.send({"op": 2,"d":{"username":self.username,"isVoiceChat":self.enable_voice_chat,"v":self.version,"isMobile":self.isMobile,"isSecure":self.isSecure,"exchangeKey":self.exchange_key}})
             await self._start_heartbeat(interval)
             self.emitter.emit("HelloEvent", HelloEvent.from_kwargs(**d))
         elif op == 12: # EXCHANGE KEY JOIN
