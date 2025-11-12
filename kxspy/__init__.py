@@ -9,7 +9,7 @@ __title__ = 'kxspy'
 __author__ = 'lavecat'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2025-present lavecat'
-__version__ = '1.0.3b'
+__version__ = '1.0.4b'
 
 from .client import Client
 from .objects import *
