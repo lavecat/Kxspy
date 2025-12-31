@@ -1,7 +1,7 @@
 """
 kxspy
 ---------
-:copyright: (c) 2025 lavecat
+:copyright: (c) 2025-2026 lavecat
 :license: MIT, see LICENSE for more details.
 """
 
@@ -9,7 +9,7 @@ __title__ = 'kxspy'
 __author__ = 'lavecat'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2025-present lavecat'
-__version__ = '1.0.4b'
+__version__ = '1.0.5b'
 
 from .client import Client
 from .objects import *

@@ -30,7 +30,7 @@ if not _version:
 # -- Project information -----------------------------------------------------
 
 project = 'kxspy'
-copyright = '2025, lavecat'
+copyright = '2025-2026, lavecat'
 author = 'lavecat'
 
 
