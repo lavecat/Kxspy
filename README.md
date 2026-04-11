@@ -9,8 +9,8 @@
 </div>
 
 > [!WARNING]
-> Kxspy is in beta version, so some features may not work as expected.
-> Please report any issues you encounter on the GitHub repository.
+> kxpy is now being archived following the shutdown of kxsnetwork,
+> goodbye kxsclient
 
 
 ## Features
